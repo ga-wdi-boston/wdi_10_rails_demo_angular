@@ -5,8 +5,16 @@ var IndexCtrl = function($scope, $location, $http, productData){
     //     {"name": "Frisbee", "description": "Silver with a gerbil taped to it" ,  "price": 7.63 }
     // ];
 
-    $scope.data = productData;
-    productData.loadProducts();
+    // init to an empty object
+    $scope.data= {};
+  
+    // Call the productData service's loadProducts method.
+    // Pass it an anonymous function that will be 
+    // called back when the remote call to the backend 
+    // is successful.
+    productData.loadProducts(function(data){
+        $scope.data.products = data.products;
+    });
 
     $scope.viewPost = function(productId){
         $location.url('/product/' + productId);
