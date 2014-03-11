@@ -18,6 +18,18 @@ angular.module('StoreFront').factory('productData',['$http', function($http){
             console.log('Failed to load products');
         });
     };
+
+      // method to get one product by id.
+    productData.loadProduct = function(productId, callback){
+        $http.get('products/' + productId + '.json')
+            .success(function(data){
+                callback(data)
+                console.log('Successfully loaded product ' + productId);
+            })
+            .error(function(){
+                console.log('Failed to load product ' + productId);
+            });
+    }; // end of productData method
     // return the productData
     return productData;
 }]);
