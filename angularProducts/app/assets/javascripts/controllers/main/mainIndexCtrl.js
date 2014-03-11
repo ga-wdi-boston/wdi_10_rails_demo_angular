@@ -1,4 +1,4 @@
-var IndexCtrl = function($scope, $location, $http){
+var IndexCtrl = function($scope, $location, $http, $productData){
     // $scope.data = {};
     // $scope.data.products = [
     //     {"name": "Shoe", "description": "Old Red smelly", "price": 0.22 },
@@ -16,5 +16,5 @@ var IndexCtrl = function($scope, $location, $http){
         $location.url('/product/new');
     };
 
-    // return productData;
+    return productData;
 };

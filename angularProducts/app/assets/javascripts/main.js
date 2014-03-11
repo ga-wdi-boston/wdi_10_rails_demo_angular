@@ -15,4 +15,12 @@ StoreFront.config(['$routeProvider', function($routeProvider){
         templateUrl: '../assets/mainIndex.html',
         controller: 'IndexCtrl'
     });
+
+     // Route to retrieve one product
+    // '/product/:productId
+    $routeProvider.when('/product/:productId',{
+        templateUrl: '../assets/mainProduct.html',
+        controller: 'ProductCtrl'
+    });
 }]);
+
