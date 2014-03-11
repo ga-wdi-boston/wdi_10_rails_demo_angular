@@ -9,7 +9,7 @@
 var StoreFront = angular.module('StoreFront',['ngRoute']);
 
 // Angular routes
-StoreFront.config(['$routeProvider', function(){
+StoreFront.config(['$routeProvider', function($routeProvider){
     // Default Route
     $routeProvider.otherwise({
         templateUrl: '../assets/mainIndex.html',
