@@ -6,3 +6,5 @@
 //= require_tree ./filters/main
 //= require_tree ./controllers/main
 //= require_tree ./directives/main
+
+var StoreFront = angular.module('StoreFront',['ngRoute']);
