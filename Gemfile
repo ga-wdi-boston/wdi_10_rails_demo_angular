@@ -28,3 +28,5 @@ gem 'active_model_serializers'
 
 # Turn off verbose logging of asset requests
 gem 'quiet_assets'
+
+gem 'jquery-rails'
