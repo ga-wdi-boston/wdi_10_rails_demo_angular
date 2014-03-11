@@ -7,3 +7,12 @@
 //= require_tree ./directives/main
 
 var StoreFront = angular.module('StoreFront',['ngRoute']);
+
+// Angular routes
+StoreFront.config(['$routeProvider', function(){
+    // Default Route
+    $routeProvider.otherwise({
+        templateUrl: '../assets/mainIndex.html',
+        controller: 'IndexCtrl'
+    });
+}]);
