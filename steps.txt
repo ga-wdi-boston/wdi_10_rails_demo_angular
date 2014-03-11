@@ -1,0 +1,245 @@
+- Create single Main HTML page. Generate the Main controller and index view for the SPA.
+
+ rails g controller Main index
+
+- Update the javascript manifest, app/assets/javascript/application.js
+// Require angular files.
+//= require angular
+//= require angular-route
+//= require_tree .
+
+
+- create routes in route.rb
+  get "main/index"
+  root "main#index"
+
+- Add the below to the main.js
+  touch app/assets/javascripts/main.js
+  Add this:
+// Place all the behaviors and hooks related to the matching controller here.
+// All this logic will automatically be available in application.js.
+//= require_self
+//= require_tree ./services/main
+//= require_tree ./filters/main
+//= require_tree ./controllers/main
+//= require_tree ./directives/main
+
+var StoreFront = angular.module('StoreFront',['ngRoute']);
+
+- create directories for the controllers, services, directives and filters in the app/assets/javascripts dir.
+mkdir -p controllers/main
+mkdir -p directives/main
+mkdir -p filters/main
+mkdir -p services/main
+
+touch controllers/main/.keep
+touch directives/main/.keep
+touch filters/main/.keep
+touch services/main/.keep
+
+- Add the "default" route in the main.js
+
+StoreFront.config(['$routeProvider', function($routeProvider){
+    // Default Route
+    $routeProvider.otherwise({
+        templateUrl: '../assets/mainIndex.html',
+        controller: 'IndexCtrl'
+    });
+}]);
+
+- Make a directory to hold templates, aka views
+mkdir -p app/assets/templates
+
+- Create a main index template/view file.
+touch app/assets/templates/mainIndex.html
+
+And add this:
+<!-- The "default" view. Will show all the products -->
+<h1 class='text-center'>Products</h1>
+
+<!-- search box that's used for filtering -->
+<input type='text' ng-model='search.$'>
+
+<!-- Listing of all the Products -->
+<div class="product-listing" ng-repeat="product in data.products | filter:search">
+
+   <!-- set a click handler on the "name" of a Product -->
+  <h3><a ng-click="viewPost($index + 1)" >{{product.name}}</a></h3>
+
+  <!-- Display a Product price and description -->
+  <div class="product-info">Price: {{product.price}} </div>
+  <div class="product-description">Description: {{product.description}} </div>
+
+</div
+
+- Create a main angular index controller
+  touch app/assets/javascripts/controllers/main/mainIndexCtrl.js
+
+  Add this:
+  var IndexCtrl = function($scope, $location, $http){
+    $scope.data = {};
+    $scope.data.products = [
+        {"name": "Shoe", "description": "Old Red smelly", "price": 0.22 },
+        {"name": "Frisbee", "description": "Silver with a gerbil taped to it" ,  "price": 7.63 }
+    ];
+
+    // $scope.data = productData;
+    // productData.loadProducts();
+
+    $scope.viewPost = function(productId){
+        $location.url('/product/' + productId);
+    };
+
+    $scope.navNewProduct = function(){
+        $location.url('/product/new');
+    };
+};
+
+- Update the layout to have a ng-app directive
+<html ng-app="StoreFront">
+
+- Update the main template, app/views/main/index.html.erb,
+   to have the ng-view directive.
+
+   <div ng-view></div>
+
+- init the app
+  rake db:create
+  rake db:migrate
+
+- start the app and go to the http://localhost:3000
+  rails s
+
+  Now we should see the two products with their name, description and price.
+  The name is a link, but it's not handled anywhere yet.
+
+- Create a service that will get the set of products.
+touch app/assets/javascripts/services/main/productData.js
+
+Add this to get the products from a JSON API/Service:
+// productData wraps a remote service that provides product data.
+// It's used by controllers to get remote data
+angular.module('StoreFront').factory('productData',['$http', function($http){
+
+    // Init a the product data with heading
+    var productData = {products: [
+        { name: "Loading Products",description: "",price: '' }
+    ]};
+
+    // method to get all the products.
+    productData.loadProducts = function(){
+        $http.get('./products.json').success(function(data){
+            // assign JSON from remote service.
+            productData.products = data.products;
+            console.log('Successfully loaded products');
+        })
+        .error(function(){
+            console.log('Failed to load products');
+        });
+    };
+    // return the productData
+    return productData;
+}]);
+
+
+- Use this data in the main angular controller.
+    Remove this:
+
+    $scope.data = {};
+    $scope.data.products = [
+        {"name": "Shoe", "description": "Old Red smelly", "price": 0.22 },
+        {"name": "Frisbee", "description": "Silver with a gerbil taped to it" ,  "price": 7.63 }
+    ];
+
+
+    Add this:
+    $scope.data = productData;
+    productData.loadProducts();
+
+- reload the app and you'll see no data. We haven't create the backend endpoint to serve up product data. Lets do that now.
+
+- generate a products resource
+rails g resource product name description price:decimal
+
+- Add this to the product controller index action.
+  # GET /articles.json
+  def index
+    @products = Product.all
+    render json: @products
+  end
+
+- Create some seed data for products.
+product = Product.create( name: "Boot", description: "Shiny and black", price: 108.76)
+puts "created product: #{product.inspect}"
+product = Product.create( name: "Shoe Horn", description: "About 3 feet long, with a built in radio", price: 6.24)
+puts "created product: #{product.inspect}"
+
+
+- Migrate and Populate DB:
+  rake db:migrate
+  rake db:seed
+
+- Run the server and you should see the products.
+
+- Lets create a way to view one Product.
+
+- Create a route to get one product in the main.js.
+    // Route to retrieve one product
+    // '/product/:productId
+    $routeProvider.when('/product/:productId',{
+        templateUrl: '../assets/mainProduct.html',
+        controller: 'ProductCtrl'
+    });
+
+- Create a product template to view one product.
+ touch app/assets/templates/mainProduct.html
+
+Add this:
+
+<div class="product-listing">
+  <h1>{{data.product.name}}</h1>
+  <div class="product-info">Price:{{ data.product.price}}
+  </div>
+  <div class="product-description">
+    {{ data.product.description }}
+  </div>
+</div>
+
+- Create a one product controller
+touch app/assets/javascripts/controllers/main/mainProductCtrl.js
+
+Add this:
+var ProductCtrl = function($scope, $routeParams, $http, productData){
+    $scope.data = productData.products[0];
+
+    // Need to pass a callback here, so we wait for the return from the
+    // remote service
+    productData.loadProduct($routeParams.productId, function(data){
+        $scope.data.product = data.product
+    });
+};
+
+
+- Add a wrapper to get one product from the backend.
+
+  Add this to app/assets/javascripts/services/main/productData.js.
+
+    // method to get one product by id.
+    productData.loadProduct = function(productId, callback){
+        $http.get('products/' + productId + '.json')
+            .success(function(data){
+                callback(data)
+                console.log('Successfully loaded product ' + productId);
+            })
+            .error(function(){
+                console.log('Failed to load product ' + productId);
+            });
+    }; // end of productData method
+
+-  Add a ProductController#show action to get the product by id.
+  def show
+    @product = Product.find(params[:id])
+    render json: @product
+  end
+
+- Now you should be able to view one product.
