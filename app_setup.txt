@@ -1,0 +1,83 @@
+- Create a new app that will serve the angular app and ALSO be a JSON service
+rails new angularProducts -d postgresql -T
+
+cd angularProducts
+
+- Fix database.yml
+
+defaults: &defaults
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+
+development:
+  <<: *defaults
+  database: angularProducts_development
+
+test:
+  <<: *defaults
+  database: angularProducts_test
+
+production:
+  <<: *defaults
+  database: angularProducts_production
+
+- Remove jquery-rails, turbolinks and jbuilder gems from the Gemfile.
+
+- Add the angular-rails  and active model serializer gems to the Gemfile.
+# Includes all the needed Angular JS files.
+gem 'angularjs-rails'
+
+# For generating the JSON for the API
+gem 'active_model_serializers'
+
+- bundle install
+
+- create a stylesheets for nav.
+touch app/assets/stylesheets/navigation.css
+Add below:
+
+ul.hmenu {
+  list-style: none;
+  margin: 0 0 2em;
+  padding: 0;
+}
+
+ul.hmenu li {
+  display: inline;
+}
+
+- Create a main.js js asset. This will, eventually contain angular js to define
+  the application module and routes.
+
+touch app/assets/javascripts/main.js
+
+Add below.
+// TODO: Add angular application module and routes.
+
+- Remove jquery and turbolinks sprockets directives from the javascript manifest file, app/assets/javascripts/application.js .
+
+Should only have this:
+//= require_tree .
+
+- Remove turbolinks from the layout. The layout should look like:
+  <%= stylesheet_link_tag    "application", media: "all" %>
+  <%= javascript_include_tag "application", "main" %>
+
+
+- Lets disable some rails generator "features".
+Add the below to the config/application.rb.
+See http://goo.gl/iqWn25 and http://goo.gl/FGgCjQ for how to configure generators.
+
+    #  turn off generation of helpers, assets, controller and view specs
+    config.generators do |generate|
+      generate.helper false
+      generate.assets false
+      generate.controller_specs false
+      generate.view_specs false
+    end
+
+- Create the DB and migrate
+  rake db:drop
+  rake db:create
+  rake db:migrate
