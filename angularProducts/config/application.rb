@@ -26,3 +26,10 @@ module AngularProducts
     # config.i18n.default_locale = :de
   end
 end
+
+ config.generators do |generate|
+      generate.helper false
+      generate.assets false
+      generate.controller_specs false
+      generate.view_specs false
+    end
