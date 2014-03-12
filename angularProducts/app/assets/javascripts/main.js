@@ -1,4 +1,3 @@
-// TODO: Add angular application module and routes.
 // Place all the behaviors and hooks related to the matching controller here.
 // All this logic will automatically be available in application.js.
 //= require_self
@@ -9,8 +8,15 @@
 
 var StoreFront = angular.module('StoreFront',['ngRoute']);
 
+// Angular routes
 StoreFront.config(['$routeProvider', function($routeProvider){
-       // Route to retrieve one product
+    // Route for '/product/new'
+    $routeProvider.when('/product/new',{
+        templateUrl: '../assets/mainCreateProduct.html',
+        controller: 'CreateProductCtrl'
+    });
+
+    // Route to retrieve one product
     // '/product/:productId
     $routeProvider.when('/product/:productId',{
         templateUrl: '../assets/mainProduct.html',
@@ -24,4 +30,28 @@ StoreFront.config(['$routeProvider', function($routeProvider){
     });
 }]);
 
+StoreFront.config(["$httpProvider", function(provider){
+  provider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
 
+  var interceptor = ['$location', '$rootScope', '$q', function($location, $rootScope, $q) {
+    function success(response) {
+      console.log("Intercepted a successful request");
+      return response;
+    };
+
+    function error(response) {
+      if (response.status == 401) {
+        console.log("Intercepted a failed 401 request");
+        $rootScope.$broadcast('event:unauthorized');
+        $location.path('login');
+        return response;
+      };
+      return $q.reject(response);
+    };
+
+    return function(promise) {
+      return promise.then(success, error);
+    };
+  }];
+  provider.responseInterceptors.push(interceptor);
+}]);
