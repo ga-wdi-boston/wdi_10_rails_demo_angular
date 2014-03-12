@@ -13,21 +13,10 @@ angular.module('StoreFront').factory('productData',['$http', function($http){
             callback(data);
             console.log('Successfully loaded products');
         })
-        .error(function(){
-            console.log('Failed to load products');
-        });
+            .error(function(){
+                console.log('Failed to load products');
+            });
     };
-    //    productData.loadProducts = function(){
-    //     $http.get('./products.json').success(function(data){
-    //         // assign JSON from remote service.
-    //         productData.products = data.products;
-    //         console.log('Successfully loaded products');
-    //     })
-    //     .error(function(){
-    //         console.log('Failed to load products');
-    //     });
-    // };
-
     // method to get one product by id.
     productData.loadProduct = function(productId, callback){
         $http.get('products/' + productId + '.json')
@@ -39,6 +28,31 @@ angular.module('StoreFront').factory('productData',['$http', function($http){
                 console.log('Failed to load product ' + productId);
             });
     }; // end of productData method
+
+    // Send a remote request to create a new product
+    productData.createProduct = function(newProduct, callback){
+        if(newProduct.newProductName == '' || newProduct.newProductdescription == '' || newProduct.newProductPrice == ''){
+            alert("Name, Description or Price is blank!");
+            return false;
+        }
+
+        var data = {new_product: {
+            name: newProduct.newProductName,
+            description: newProduct.newProductDescription,
+            price: newProduct.newProductPrice,
+        }};
+
+        $http.post('products.json', data).
+            success(function(data){
+                callback(data);
+            }).
+            error(function(){
+                console.error("Failed to create a new product");
+            });
+
+        return true;
+    };
+
 
     // return the productData
     return productData;

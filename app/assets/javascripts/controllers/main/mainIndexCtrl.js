@@ -7,10 +7,10 @@ var IndexCtrl = function($scope, $location, $http, productData){
 
     // init to an empty object
     $scope.data= {};
-  
+
     // Call the productData service's loadProducts method.
-    // Pass it an anonymous function that will be 
-    // called back when the remote call to the backend 
+    // Pass it an anonymous function that will be
+    // called back when the remote call to the backend
     // is successful.
     productData.loadProducts(function(data){
         $scope.data.products = data.products;
