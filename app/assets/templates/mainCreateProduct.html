@@ -1,0 +1,24 @@
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <a ng-click="navHome()" class="brand">My blog</a>
+    <ul class="nav pull-right">
+      <li><a ng-click="navNewProduct()">New Product</a></li>
+    </ul>
+  </div>
+</div>
+
+<div class="container" style="margin-top: 40px">
+  <h1 class="text-center">Create new product</h1>
+  <form>
+    <fieldset>
+      <label><strong>Price</strong></label>
+      <input class="span12" ng-model="formData.newProductPrice" placeholder="New Product" type="text" maxlength="250">
+      <label><strong>Name</strong></label>
+      <input class="span12" ng-model="formData.newProductName" placeholder="New Product" type="text" maxlength="250">
+      <label><strong>Description</strong></label>
+      <textarea class="span12" style="height: 250px" ng-model="formData.newProductDescription" placeholder="Type your product here..."></textarea>
+      <button class="btn btn-primary" ng-click="createProduct()">Create</button>
+      <button class="btn btn-danger pull-right" ng-click="clearProduct()">Clear product</button>
+    </fieldset>
+  </form>
+</div>

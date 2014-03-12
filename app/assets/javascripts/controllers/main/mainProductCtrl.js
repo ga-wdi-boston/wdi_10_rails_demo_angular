@@ -1,4 +1,4 @@
-var ProductCtrl = function($scope, $routeParams, $http, productData){
+var ProductCtrl = function($scope, $routeParams, $location, $http, productData){
     $scope.data = productData.products[0];
 
     // Need to pass a callback here, so we wait for the return from the

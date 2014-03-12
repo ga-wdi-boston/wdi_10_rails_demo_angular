@@ -1,8 +1,9 @@
+<h3><a ng-click="navNewProduct()">New Product</a></h3>
 <!-- The "default" view. Will show all the products -->
 <h1 class='text-center'>Products</h1>
 
 <!-- search box that's used for filtering -->
-<input type='text' ng-model='search.$'>
+<input type='text' ng-model='search.$' placeholder="Search">
 
 <!-- Listing of all the Products -->
 <div class="product-listing" ng-repeat="product in data.products | filter:search">
@@ -14,4 +15,4 @@
   <div class="product-info">Price: {{product.price}} </div>
   <div class="product-description">Description: {{product.description}} </div>
 
-</div
+</div>

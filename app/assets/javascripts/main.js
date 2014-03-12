@@ -10,16 +10,26 @@ var StoreFront = angular.module('StoreFront',['ngRoute']);
 
 // Angular routes
 StoreFront.config(['$routeProvider', function($routeProvider){
+    // Default Route
+    $routeProvider.otherwise({
+        templateUrl: '../assets/mainIndex.html',
+        controller: 'IndexCtrl'
     // Route to retrieve one product
     // '/product/:productId
+    });
+
+    $routeProvider.when('/product/new',{
+        templateUrl: '../assets/mainCreateProduct.html',
+        controller: 'CreateProductCtrl'
+    });
+
     $routeProvider.when('/product/:productId',{
         templateUrl: '../assets/mainProduct.html',
         controller: 'ProductCtrl'
     });
 
-    // Default Route
-    $routeProvider.otherwise({
-        templateUrl: '../assets/mainIndex.html',
-        controller: 'IndexCtrl'
-    });
+}]);
+
+StoreFront.config(["$httpProvider", function($provider){
+    $provider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
 }]);

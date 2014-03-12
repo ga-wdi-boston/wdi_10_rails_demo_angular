@@ -19,3 +19,4 @@ Work through the steps in the __steps.txt__ file.
 ### Future work
 * Implement user login with Devise.
 * Allow a logged in user to create a cart for their products.
+
