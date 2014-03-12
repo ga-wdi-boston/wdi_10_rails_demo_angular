@@ -1,0 +1,21 @@
+<h1>Create a New Product</h1>
+<form>
+  <fieldset>
+    <div class='row'>
+      <label><strong>Name</strong></label>
+      <input ng-model="formData.newProductName" placeholder="New Product Name" type="text" maxlength="250">
+    </div>
+    <div class='row'>
+      <label><strong>Price</strong></label>
+      <input ng-model="formData.newProductPrice" placeholder="New Product Price" type="text" maxlength="10">
+    </div>
+    <div class='row'>
+      <label><strong>Description</strong></label>
+      <textarea style="height: 250px" ng-model="formData.newProductDescription" placeholder="Type new product description here..."></textarea>
+    </div>
+    <div class='row'>
+      <button ng-click="createProduct()">Create Product</button>
+      <button ng-click="clearProduct()">Clear Product</button>
+    </div>
+  </fieldset>
+</form>
